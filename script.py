@@ -17,6 +17,16 @@ class Database:
 
 
     def create_connection(self, database_name):
+        """Creates connection with the given database name
+
+        Parameters
+        ----------
+        database_name (string) : Database name. For eg. movies.db
+
+        Examples
+        -------
+        movies.db
+        """
 
         try:
             self.conn = sqlite3.connect(database_name)
@@ -25,18 +35,54 @@ class Database:
             print('Error connecting to database')
 
     def read_csv_from_file(self, file_name):
+        """Pandas read_csv function is used to read csv files and store it into a dataframe
+
+        Parameters
+        ----------
+        file_name (string) : CSV file name.
+
+        Examples
+        -------
+        movie_metadata.csv
+        """
         self.csv_df = pd.read_csv(file_name)
 
 
     def add_update_movie_metadata_table(self, table_name):
+        """Pandas to_sql function is used to store dataframe into sql table
+
+        Parameters
+        ----------
+        table_name (string) : SQL table name.
+
+        Examples
+        -------
+        movie_metadata
+        """
         self.csv_df.to_sql(table_name, self.conn, if_exists='replace')
 
 
     def get_query_result_to_df(self, query):
+        """Pandas read_sql_query function is used to store the query output in pandas dataframe
+
+        Parameters
+        ----------
+        query (string) : Query for execution.
+        
+        Examples
+        -------
+        select * from movie_metadata;
+
+        Returns
+        -------
+        dataframe : pandas dataframe with query output
+        """
         return pd.read_sql_query(query, self.conn)
 
 
     def close_connection(self):
+        """Closes the connection if connection is open
+        """
         if self.conn:
             self.conn.close()
 
