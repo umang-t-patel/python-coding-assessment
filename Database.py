@@ -16,7 +16,7 @@ class Database:
     movies.db
     """
 
-    def __init__(self, database_name=None):
+    def __init__(self, database_name):
         self.conn = None
         self.csv_df = None
         self.query_result_df = None
@@ -24,6 +24,8 @@ class Database:
 
         if self.database_name:
             self.create_connection()
+        else:
+            print('Please provide db name')
 
 
     def create_connection(self):
@@ -51,7 +53,10 @@ class Database:
         movie_metadata.csv
 
         """
-        self.csv_df = pd.read_csv(file_name)
+        try:
+            self.csv_df = pd.read_csv(file_name)
+        except FileNotFoundError:
+            print('File does not exists!')
 
 
     def add_update_movie_metadata_table(self, table_name):
@@ -67,7 +72,8 @@ class Database:
         movie_metadata
 
         """
-        self.csv_df.to_sql(table_name, self.conn, if_exists='replace')
+        if not self.csv_df.empty:
+            self.csv_df.to_sql(table_name, self.conn, if_exists='replace')
 
 
     def get_query_result_to_df(self, query):
@@ -87,7 +93,10 @@ class Database:
         dataframe : pandas dataframe with query output
 
         """
-        return pd.read_sql_query(query, self.conn)
+        try:
+            return pd.read_sql_query(query, self.conn)
+        except pd.pandas.io.sql.DatabaseError:
+            print('Execution failed. Database error')
 
 
     def close_connection(self):

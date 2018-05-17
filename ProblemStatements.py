@@ -1,7 +1,8 @@
 import sys
 
-import Database as db
+import pandas as pd
 
+import Database as db
 
 
 class ProblemStatements:
@@ -30,8 +31,11 @@ class ProblemStatements:
 
         """
         self.db = db.Database('movies.db')
-        self.db.read_csv_from_file('movie_metadata.csv')
-        self.db.add_update_movie_metadata_table('movie_metadata')
+        if self.db:
+            self.db.read_csv_from_file('movie_metadata.csv')
+            self.db.add_update_movie_metadata_table('movie_metadata')
+        else:
+            self.exit_program()
 
 
     def get_all_movie_metadata(self):
@@ -44,6 +48,8 @@ class ProblemStatements:
         query_get_all_movie_metadata = 'select * from movie_metadata;'
         self.movies_df = self.db.get_query_result_to_df(query_get_all_movie_metadata)
         self.db.close_connection()
+        if self.movies_df.empty:
+            self.exit_program()        
 
 
     def exit_program(self): 
@@ -159,7 +165,7 @@ class ProblemStatements:
         And prints top 10 records of the dataframe
         
         """
-        most_rated_movie = db.pd.DataFrame(list(self.filter_revenue.items()), columns=['Actor||||Director', 'Total IMDB Rating'])
+        most_rated_movie = pd.DataFrame(list(self.filter_revenue.items()), columns=['Actor||||Director', 'Total IMDB Rating'])
         most_rated_movie = most_rated_movie.sort_values(by='Total IMDB Rating', ascending=False,)
         print('Top 10 actor director pair with most IMDB rating.\n')
         print(most_rated_movie.head(10))
@@ -199,7 +205,7 @@ class ProblemStatements:
         filter_key (string) : It can be geners, actor name or director name.
         
         """
-        most_profitable_genre = db.pd.DataFrame(list(self.filter_revenue.items()), columns=[filter_key, 'Revenue'])
+        most_profitable_genre = pd.DataFrame(list(self.filter_revenue.items()), columns=[filter_key, 'Revenue'])
         most_profitable_genre = most_profitable_genre.sort_values(by='Revenue')
         print('Top 10 ' + filter_key + ' with decreasing profitability.\n')
         print(most_profitable_genre.head(10))
