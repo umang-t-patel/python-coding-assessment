@@ -21,9 +21,9 @@
         4. Commit code to a git repo (gitlab or github) and send us a link to it.
         5. Also document your steps, libraries used and any instructions.
 
-## Download and run app on local machine
+## Download and run script on local machine
 
-### Clone the app on local machine
+### Clone the script on local machine
 
 1. Clone the repository
  
